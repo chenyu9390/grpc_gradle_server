@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: recharge_service
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://127.0.0.1:3306/recharge?useAffectedRows=true&allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8&useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+    initial-size: 10
+    max-active: 100
+    min-idle: 10
+    max-wait: 60000
+    pool-prepared-statements: true
+    max-pool-prepared-statement-per-connection-size: 20
+    time-between-eviction-runs-millis: 60000
+    min-evictable-idle-time-millis: 300000
+    validation-query: SELECT 1
+    test-while-idle: true
+    test-on-borrow: false
+    test-on-return: false
+    stat-view-servlet:
+      enabled: true
+      url-pattern: /druid/*
+      #login-username: admin
+      #login-password: admin
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: true
+        wall:
+          config:
+            multi-statement-allow: true
+logging:
+  #config: ./logback.xml
+  path: ./logs
+  level:
+    net.gichain.rechargeChannel: debug
+    net.pay: debug
+net:
+  pay:
+    weixinpay:
+      appId: "wx2bad6869cdf03e36"
+      macId: "1547722991"
+      key: "ghdjsaij367r677dwvadu67GYUYIFiuy"
+      certPath: "D:\\sourcetree\\genergy\\recharge_service\\cert\\apiclient_cert.p12"
+grpc:
+  server:
+    port: 9090

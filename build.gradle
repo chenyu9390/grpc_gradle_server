@@ -1,0 +1,84 @@
+// buildscript必须在顶部，注意位置
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        // 让spring-boot支持gradle
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.1.RELEASE")
+    }
+}
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.1.5.RELEASE'
+}
+
+group 'net.gichain.genergy'
+version '0.0.1'
+
+sourceCompatibility = 1.8
+apply plugin: 'java'
+apply plugin: "maven"
+apply plugin: 'maven-publish'
+apply plugin: 'idea'
+// 使用spring boot
+apply plugin: "org.springframework.boot"
+// 使用spring boot的自动依赖管理
+apply plugin: 'io.spring.dependency-management'
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url 'https://dwww.dcpay.vip/nexus/content/groups/public/'
+        /*credentials {
+            username USERNAME
+            password PASSWORD
+        }*/
+    }
+}
+/**
+ * 防止控制台乱码
+ */
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+dependencies {
+    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
+    runtimeOnly group: 'mysql', name: 'mysql-connector-java', version: '8.0.13'
+    compile group: 'com.alibaba',name: 'druid-spring-boot-starter',version: '1.1.10'
+    compile group: 'org.springframework',name: 'spring-jdbc',version: '5.1.6.RELEASE'
+    compile group: 'net.devh',name: 'grpc-server-spring-boot-starter',version: '2.8.0.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.1.RELEASE'
+    compile group: 'net.sdk',name: 'PaySDK',version: '0.0.1'
+    compile group: 'net.gichain.genergy',name: 'recharge_interface',version: '0.0.1'
+    compile("net.gichain.genergy:recharge_interface:0.0.1"){
+        exclude group:'org.slf4j'
+    }
+    compileOnly 'org.projectlombok:lombok:1.18.2'
+    /*compile 'org.slf4j:slf4j-log4j12:1.8.0-beta1'
+    compile 'org.slf4j:slf4j-api:1.8.0-beta1'*/
+    annotationProcessor 'org.projectlombok:lombok:1.18.2'
+}
+/**
+ * 发布到本地仓库：publishToMavenLocal
+ * 发布到远程仓库：publishMavenPublicationToMavenRepository
+ */
+publishing.repositories {
+    maven {
+        credentials {
+            username 'dev'
+            password '1qaz2wsx'
+        }
+        url 'https://dwww.dcpay.vip/nexus/content/repositories/releases/'
+    }
+}
+publishing.publications {
+    mavenJava(MavenPublication) {
+        groupId 'net.gichain.genergy'
+        artifactId 'recharge_service'
+        version '0.0.1'
+        description '充值服务接口实现' // 说明描述
+        from components.java
+    }
+}
